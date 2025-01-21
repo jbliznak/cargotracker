@@ -27,7 +27,7 @@ public class Itinerary implements Serializable {
 
 	// TODO [Clean Code] Look into why cascade delete doesn't work.
 	// JBoss EAP Migration: orphanRemoval = true causes 
-	// - javax.persistence.PersistenceException: org.hibernate.HibernateException: Don't change the reference to a collection with delete-orphan enabled : org.eclipse.cargotracker.domain.model.cargo.Cargo.itinerary.legs
+	// - jakarta.persistence.PersistenceException: org.hibernate.HibernateException: Don't change the reference to a collection with delete-orphan enabled : org.eclipse.cargotracker.domain.model.cargo.Cargo.itinerary.legs
 	@OneToMany(cascade = CascadeType.ALL)
 	@JoinColumn(name = "cargo_id")
 	// TODO [Clean Code] Index this is in leg_index

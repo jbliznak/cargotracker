@@ -4,7 +4,7 @@
     <jdbc-resource pool-name="CargoTrackerDatabase"
         jndi-name="java:app/jdbc/CargoTrackerDatabase" />
     <jdbc-connection-pool name="CargoTrackerDatabase"
-        res-type="javax.sql.DataSource"
+        res-type="jakarta.sql.DataSource"
         datasource-classname="org.h2.jdbcx.JdbcDataSource">
         <property name="user" value="sa" />
         <property name="password" value="sa" />
