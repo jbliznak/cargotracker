@@ -29,7 +29,7 @@
 
 		<maven.compiler.source>17</maven.compiler.source>
 		<maven.compiler.target>17</maven.compiler.target>
-        <version.server.bom>8.0.0.GA-redhat-00009</version.server.bom>
+        <version.server.bom>8.0.5.GA-redhat-00005</version.server.bom>
 
 		<!-- Arquillian properties -->
 		<arquillian.core.version>1.4.1.Final</arquillian.core.version>
@@ -51,16 +51,6 @@
 
 	<dependencyManagement>
 		<dependencies>
-			<!-- Arquillian Bill Of Management used to reduce collision between testing 
-				dependencies. Using a dependency manager we don't need to specify the version 
-				of each Arquillian dependency. -->
-			<dependency>
-				<groupId>org.jboss.arquillian</groupId>
-				<artifactId>arquillian-bom</artifactId>
-				<version>${arquillian.core.version}</version>
-				<scope>import</scope>
-				<type>pom</type>
-			</dependency>
             <dependency>
                 <groupId>org.jboss.bom</groupId>
                 <artifactId>jboss-eap-ee-with-tools</artifactId>
@@ -77,44 +67,43 @@
 		<dependency>
 			<groupId>jakarta.annotation</groupId>
 			<artifactId>jakarta.annotation-api</artifactId>
-			<version>2.1.1</version>
+			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>jakarta.inject</groupId>
 			<artifactId>jakarta.inject-api</artifactId>
-			<version>2.0.1</version>
+			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>jakarta.jms</groupId>
 			<artifactId>jakarta.jms-api</artifactId>
-			<version>3.1.0</version>
+			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>jakarta.json</groupId>
 			<artifactId>jakarta.json-api</artifactId>
-			<version>2.1.3</version>
+			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>jakarta.persistence</groupId>
 			<artifactId>jakarta.persistence-api</artifactId>
-			<version>3.2.0</version>
+			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>jakarta.transaction</groupId>
 			<artifactId>jakarta.transaction-api</artifactId>
-			<version>2.0.1</version>
+			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>jakarta.websocket</groupId>
 			<artifactId>jakarta.websocket-api</artifactId>
-			<version>2.2.0</version>
+			<scope>provided</scope>
 		</dependency>
 
 		<!-- Jakarta EE API v10 -->
 		<dependency>
 			<groupId>jakarta.ejb</groupId>
 			<artifactId>jakarta.ejb-api</artifactId>
-			<version>4.0.0</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
@@ -140,6 +129,16 @@
 		<dependency>
 			<groupId>jakarta.xml.bind</groupId>
 			<artifactId>jakarta.xml.bind-api</artifactId>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>jakarta.validation</groupId>
+			<artifactId>jakarta.validation-api</artifactId>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>jakarta.ws.rs</groupId>
+			<artifactId>jakarta.ws.rs-api</artifactId>
 			<scope>provided</scope>
 		</dependency>
 
@@ -189,34 +188,24 @@
 	<build>
 		<finalName>cargo-tracker</finalName>
 		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-war-plugin</artifactId>
-				<version>3.2.3</version>
-				<configuration>
-					<failOnMissingWebXml>false</failOnMissingWebXml>
-					<filteringDeploymentDescriptors>true</filteringDeploymentDescriptors>
-				</configuration>
-			</plugin>
-			<plugin>
-				<artifactId>maven-surefire-plugin</artifactId>
-				<version>2.22.2</version>
-				<configuration>
-					<skipTests>${skipTests}</skipTests>
-				</configuration>
-			</plugin>
-
+            <plugin>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.13.0</version>
+                <configuration>
+                    <source>${maven.compiler.source}</source>
+                    <target>${maven.compiler.target}</target>
+                </configuration>
+            </plugin>
 		</plugins>
 	</build>
-
 	<profiles>
 		<profile>
 			<id>payara</id>
 			<activation>
-				<activeByDefault>true</activeByDefault>
+				<activeByDefault>false</activeByDefault>
 			</activation>
 			<properties>
-				<payara.version>5.2022.5</payara.version>
+                <payara.version>6.2023.12</payara.version>
 				<!-- Application properties -->
 				<webapp.graphTraversalUrl>
 					http://localhost:8080/cargo-tracker/rest/graph-traversal/shortest-path</webapp.graphTraversalUrl>
@@ -228,32 +217,40 @@
 				<db.password />
 			</properties>
 			<dependencies>
-				<!-- We need a Jersey specific dependency -->
-				<dependency>
-					<groupId>org.glassfish.jersey.core</groupId>
-					<artifactId>jersey-server</artifactId>
-					<version>3.1.2</version>
-					<scope>provided</scope>
-				</dependency>
-				<!-- Embedding the JDBC driver in the WAR works in Payara -->
-				<dependency>
-					<groupId>com.h2database</groupId>
-					<artifactId>h2</artifactId>
-					<version>2.0.206</version>
-					<scope>runtime</scope>
-				</dependency>
-				<dependency>
-					<groupId>fish.payara.extras</groupId>
-					<artifactId>payara-micro</artifactId>
-					<version>${payara.version}</version>
-					<scope>test</scope>
-				</dependency>
-				<dependency>
-					<groupId>fish.payara.arquillian</groupId>
-					<artifactId>arquillian-payara-micro-managed</artifactId>
-					<version>2.4.5</version>
-					<scope>test</scope>
-				</dependency>
+                <!-- We need a Jersey specific dependency for property name constants -->
+                <dependency>
+                    <groupId>org.glassfish.jersey.core</groupId>
+                    <artifactId>jersey-server</artifactId>
+                    <version>3.1.2</version>
+                    <scope>provided</scope>
+                </dependency>
+                <!-- Embedding the JDBC driver in the WAR works in GlassFish -->
+                <dependency>
+                    <groupId>com.h2database</groupId>
+                    <artifactId>h2</artifactId>
+                    <version>2.1.214</version>
+                    <scope>runtime</scope>
+                </dependency>
+                <dependency>
+                    <groupId>fish.payara.extras</groupId>
+                    <artifactId>payara-micro</artifactId>
+                    <version>${payara.version}</version>
+                    <scope>test</scope>
+                </dependency>
+                <!-- Payara Micro Managed Container Adapter -->
+                <dependency>
+                    <groupId>fish.payara.arquillian</groupId>
+                    <artifactId>arquillian-payara-micro-managed</artifactId>
+                    <version>3.0.alpha8</version>
+                    <scope>test</scope>
+                </dependency>
+                <!-- Needed at the moment for Jakarta EE 10 support -->
+                <dependency>
+                    <groupId>fish.payara.arquillian</groupId>
+                    <artifactId>payara-client-ee9</artifactId>
+                    <version>3.0.alpha8</version>
+                    <scope>test</scope>
+                </dependency>
 			</dependencies>
 			<build>
 				<plugins>
@@ -265,7 +262,7 @@
 					<plugin>
 						<groupId>org.codehaus.cargo</groupId>
 						<artifactId>cargo-maven3-plugin</artifactId>
-						<version>1.10.7</version>
+						<version>1.10.9</version>
 						<configuration>
 							<container>
 								<containerId>payara</containerId>
