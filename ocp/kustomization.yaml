@@ -1,0 +1,42 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+- base/deployment.yaml
+- base/svc.yaml
+- base/route.yaml
+- base/pg-deployment.yaml
+- base/pg-svc.yaml
+
+commonLabels:
+  app.kubernetes.io/part-of: cargo-tracker-app
+
+configMapGenerator:
+- name: cargo-tracker-env
+  literals:
+  - JGROUPS_PING_PROTOCOL=kubernetes.KUBE_PING
+  - KUBERNETES_NAMESPACE=cargo-tracker-prj
+  - KUBERNETES_LABELS=app=cargo-tracker
+  - DB_SERVICE_PREFIX_MAPPING=PGDS-postgresql=CTDS
+  - PGDS-postgresql_SERVICE_HOST=cargo-tracker-pg
+  - PGDS-postgresql_SERVICE_PORT=5432
+  - CTDS_JNDI=java:/jdbc/CargoTrackerDatabase
+  - CTDS_JTA=false
+  - CTDS_NONXA=true
+  - CTDS_MAX_POOL_SIZE=20
+  - CTDS_MIN_POOL_SIZE=1
+  - CTDS_URL=jdbc:postgresql://cargo-tracker-pg:5432/ct-db
+  - CTDS_USERNAME=ct-user
+  - CTDS_PASSWORD=ct-password
+
+  options:
+    disableNameSuffixHash: true
+
+secretGenerator:
+- name: cargo-tracker-pg-env
+  literals:
+  - POSTGRESQL_DATABASE=ct-db
+  - POSTGRESQL_USER=ct-user
+  - POSTGRESQL_PASSWORD=ct-password
+  options:
+    disableNameSuffixHash: true
