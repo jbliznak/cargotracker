@@ -54,7 +54,7 @@ spec:
             path: /health/live
             port: 9990
             scheme: HTTP
-          initialDelaySeconds: 30
+          initialDelaySeconds: 10
         readinessProbe:
           httpGet:
             path: /health/ready
@@ -66,4 +66,4 @@ spec:
             path: /health/started
             port: 9990
             scheme: HTTP
-          initialDelaySeconds: 60
+          initialDelaySeconds: 10

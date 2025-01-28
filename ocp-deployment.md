@@ -5,7 +5,7 @@ OpenShift Deployment
 
 Create a new project
 
-    ocp new-project cargo-tracker-prj
+    oc new-project cargo-tracker-prj
 
 > [!NOTE]
 > If you use a different name, update accordingly the env viariable in `ocp/kustomization.yaml`

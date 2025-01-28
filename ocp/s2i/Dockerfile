@@ -4,10 +4,12 @@
 FROM registry.redhat.io/jboss-eap-8/eap8-openjdk17-builder-openshift-rhel8:latest AS builder
 
 # Set up environment variables for provisioning. 
-ENV GALLEON_PROVISION_FEATURE_PACKS org.jboss.eap:wildfly-ee-galleon-pack,org.jboss.eap.cloud:eap-cloud-galleon-pack
-ENV GALLEON_PROVISION_LAYERS cloud-default-config
+ENV GALLEON_PROVISION_FEATURE_PACKS org.jboss.eap:wildfly-ee-galleon-pack,org.jboss.eap.cloud:eap-cloud-galleon-pack,org.jboss.eap:eap-datasources-galleon-pack
+ENV GALLEON_PROVISION_LAYERS cloud-default-config,embedded-activemq,postgresql-driver,postgresql-datasource
 # Specify the JBoss EAP version  
 ENV GALLEON_PROVISION_CHANNELS org.jboss.eap.channels:eap-8.0
+
+ENV POSTGRESQL_DRIVER_VERSION 42.7.5
 
 # ENV MAVEN_MIRROR_URL <maven mirror URL if needed>
 
@@ -37,14 +39,14 @@ COPY --from=builder --chown=jboss:root $JBOSS_HOME $JBOSS_HOME
 #
 #      COPY --chown=jboss:root standalone.xml  $JBOSS_HOME/standalone/configuration
 
-COPY --chown=jboss:root modules/ $JBOSS_HOME/modules/
+#COPY --chown=jboss:root modules/ $JBOSS_HOME/modules/
 COPY --chown=jboss:root deployments/*.war $JBOSS_HOME/standalone/deployments
 # the following is not working
 #COPY --chown=jboss:root configuration/standalone-openshift.xml $JBOSS_HOME/standalone/configuration/standalone.xml
 
-COPY --chown=jboss:root configuration/ /home/jboss/configuration/
-COPY --chown=jboss:root install.sh /home/jboss
-RUN chmod +x /home/jboss/install.sh && /home/jboss/install.sh
+# COPY --chown=jboss:root configuration/ /home/jboss/configuration/
+# COPY --chown=jboss:root install.sh /home/jboss
+# RUN chmod +x /home/jboss/install.sh && /home/jboss/install.sh
 
 # # Ensure appropriate permissions for the copied files.
 RUN chmod -R ug+rwX $JBOSS_HOME

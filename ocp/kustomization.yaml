@@ -28,9 +28,12 @@ configMapGenerator:
   - CTDS_URL=jdbc:postgresql://cargo-tracker-pg:5432/ct-db
   - CTDS_USERNAME=ct-user
   - CTDS_PASSWORD=ct-password
+  # WORKAROUND: This second datasource definition is used for the default-binding:
+  # - POSTGRESQL_JNDI=java:/jdbc/CargoTrackerDatabase
+  - POSTGRESQL_URL=jdbc:postgresql://cargo-tracker-pg:5432/ct-db
+  - POSTGRESQL_USER=ct-user
+  - POSTGRESQL_PASSWORD=ct-password
 
-  options:
-    disableNameSuffixHash: true
 
 secretGenerator:
 - name: cargo-tracker-pg-env
