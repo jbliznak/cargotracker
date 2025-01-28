@@ -49,3 +49,5 @@ Open the application in your web browser
 [Datasource](https://docs.redhat.com/en/documentation/red_hat_jboss_enterprise_application_platform/8.0/html/using_jboss_eap_on_openshift_container_platform/assembly_reference-information-for-openshift-container-platform_default#ref_openshift-datasources_assembly_reference-information-for-openshift-container-platform)
 
 [s2i_modules_drivers_deployments](https://docs.redhat.com/en/documentation/red_hat_jboss_enterprise_application_platform/7.4/html-single/getting_started_with_jboss_eap_for_openshift_container_platform/index?extIdCarryOver=true&intcmp=701f2000000tjyaAAA&sc_cid=RHCTE1240000433669#s2i_modules_drivers_deployments)
+
+[Driver and Datasource configuration via Galleon layer](https://github.com/jbossas/eap-datasources-galleon-pack/blob/main/doc/postgresql/README.md)
